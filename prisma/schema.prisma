@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── ModelType ────────────────────────────────────────────────────────────────
+// Catalog of model categories (CapabilityModel, ApplicationModel, CMDBModel…)
+
+model ModelType {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  models Model[]
+
+  @@map("model_types")
+}
+
+// ─── NodeKind ─────────────────────────────────────────────────────────────────
+// Reusable taxonomy entry with a JSON schema defining custom property fields.
+// Shared across all Models — decoupled from any specific Model or ModelType.
+
+model NodeKind {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  schema      String   // JSON string: { fields: [{ name, type, required, options?, default? }] }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  nodes Node[]
+
+  @@map("node_kinds")
+}
+
+// ─── Model ────────────────────────────────────────────────────────────────────
+// Root container for a node tree. Typed by ModelType.
+
+model Model {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  modelTypeId String
+  modelType   ModelType @relation(fields: [modelTypeId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  nodes Node[]
+
+  @@map("models")
+}
+
+// ─── Node ─────────────────────────────────────────────────────────────────────
+// Unified entity for all hierarchy levels:
+//   Level 1 = Domain (no kind)
+//   Level 2 = Group  (no kind)
+//   Level 3 = Capability  (kind required)
+//   Level 4 = Sub-capability (kind required)
+//
+// Constraints enforced at the application layer:
+//   - level must be 1–4
+//   - parent.level must equal node.level - 1
+//   - level 1: parentId must be null
+//   - levels 1–2: kindId must be null
+//   - levels 3–4: kindId must be set
+//   - properties must satisfy kindId's schema
+
+model Node {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  owner       String?
+  level       Int      // 1 | 2 | 3 | 4
+  parentId    String?
+  parent      Node?    @relation("NodeTree", fields: [parentId], references: [id])
+  children    Node[]   @relation("NodeTree")
+  modelId     String
+  model       Model    @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  kindId      String?
+  kind        NodeKind? @relation(fields: [kindId], references: [id])
+  properties  String   @default("{}") // JSON string validated against NodeKind.schema
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fromRelationships NodeRelationship[] @relation("FromNode")
+  toRelationships   NodeRelationship[] @relation("ToNode")
+
+  @@index([modelId])
+  @@index([parentId])
+  @@index([kindId])
+  @@map("nodes")
+}
+
+// ─── NodeRelationship ─────────────────────────────────────────────────────────
+// Typed directed edge between two nodes (can cross Models).
+// Kept intentionally simple for now; RelationshipKind schema binding deferred.
+
+model NodeRelationship {
+  id           String   @id @default(uuid())
+  fromNodeId   String
+  fromNode     Node     @relation("FromNode", fields: [fromNodeId], references: [id])
+  toNodeId     String
+  toNode       Node     @relation("ToNode", fields: [toNodeId], references: [id])
+  relationType String
+  properties   String   @default("{}") // JSON string, optional metadata
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([fromNodeId])
+  @@index([toNodeId])
+  @@map("node_relationships")
+}
