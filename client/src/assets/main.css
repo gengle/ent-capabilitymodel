@@ -186,6 +186,293 @@
   color: #94a3b8;
 }
 
+/* ── Model actions in header ───────────────────────────────────── */
+
+.model-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-icon-header {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 1rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.btn-icon-header:hover {
+  background: #334155;
+  color: #f8fafc;
+}
+
+.btn-icon-header.btn-icon-danger:hover {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.btn.btn-sm {
+  padding: 0.3rem 0.875rem;
+  font-size: 0.8rem;
+}
+
+.btn.btn-outline {
+  background: transparent;
+  border: 1px solid #475569;
+  color: #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn.btn-outline:hover {
+  background: #334155;
+  color: #f8fafc;
+}
+
+/* ── Card header with actions ──────────────────────────────────── */
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.125rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.domain-card:hover > .card-header .card-actions,
+.group-card:hover > .card-header .card-actions,
+.capability-card:hover > .card-header .card-actions {
+  opacity: 1;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.6;
+}
+
+.btn-icon:hover {
+  opacity: 1;
+  background: rgba(0,0,0,0.12);
+}
+
+.btn-icon:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.btn-icon.btn-icon-del:hover:not(:disabled) {
+  background: rgba(220,38,38,0.15);
+  color: #dc2626;
+}
+
+/* ── Sub-capability items ──────────────────────────────────────── */
+
+.subcap-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.subcap-actions {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.subcap-item:hover .subcap-actions {
+  opacity: 1;
+}
+
+/* ── Add child button ──────────────────────────────────────────── */
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  cursor: pointer;
+  border: 1px dashed #cbd5e1;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  background: transparent;
+  width: 100%;
+  margin-top: 0.375rem;
+  box-sizing: border-box;
+}
+
+.add-btn:hover {
+  color: #3b82f6;
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.add-domain-btn {
+  margin-top: 1rem;
+  max-width: 180px;
+}
+
+/* ── Error toast ───────────────────────────────────────────────── */
+
+.error-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 200;
+  max-width: 380px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #991b1b;
+  padding: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Modal ─────────────────────────────────────────────────────── */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  min-width: 340px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.1rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 0.375rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: 2px solid #3b82f6;
+  border-color: #3b82f6;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.required {
+  color: #dc2626;
+}
+
+.hint {
+  color: #94a3b8;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-ghost:hover {
+  background: #f8fafc;
+}
+
 /* ── States ────────────────────────────────────────────────────── */
 
 .loading-spinner {

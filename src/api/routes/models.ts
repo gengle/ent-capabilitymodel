@@ -1,6 +1,17 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { listModels, getModel } from "../../services/model";
-import { listNodesByModel } from "../../services/node";
+import { listModels, getModel, createModel, updateModel, deleteModel } from "../../services/model";
+import { listNodesByModel, createNode } from "../../services/node";
+
+// ─── Error helper ─────────────────────────────────────────────────────────────
+
+export function handleServiceError(err: unknown, res: Response): void {
+  const message = err instanceof Error ? err.message : String(err);
+  if (message.toLowerCase().includes("not found")) {
+    res.status(404).json({ error: message });
+  } else {
+    res.status(400).json({ error: message });
+  }
+}
 import type { Node } from "../../../generated/prisma/models";
 
 export const modelsRouter = Router();
@@ -93,6 +104,57 @@ function assembleTree(nodes: (Node & { kind?: { name: string } | null })[], mode
 
   return { id: modelId, name: modelName, description: modelDescription, modelType: modelTypeName, domains };
 }
+
+// ─── POST /api/models ─────────────────────────────────────────────────────────
+
+modelsRouter.post("/models", async (req: Request, res: Response) => {
+  const { name, description, modelTypeId } = req.body ?? {};
+  if (!name) { res.status(400).json({ error: "name is required" }); return; }
+  if (!modelTypeId) { res.status(400).json({ error: "modelTypeId is required" }); return; }
+  try {
+    const model = await createModel({ name, description, modelTypeId });
+    res.status(201).json(model);
+  } catch (err) {
+    handleServiceError(err, res);
+  }
+});
+
+// ─── PUT /api/models/:id ──────────────────────────────────────────────────────
+
+modelsRouter.put("/models/:id", async (req: Request, res: Response) => {
+  const { name, description } = req.body ?? {};
+  try {
+    const model = await updateModel(req.params.id as string, { name, description });
+    res.json(model);
+  } catch (err) {
+    handleServiceError(err, res);
+  }
+});
+
+// ─── DELETE /api/models/:id ───────────────────────────────────────────────────
+
+modelsRouter.delete("/models/:id", async (req: Request, res: Response) => {
+  try {
+    await deleteModel(req.params.id as string);
+    res.status(204).send();
+  } catch (err) {
+    handleServiceError(err, res);
+  }
+});
+
+// ─── POST /api/models/:modelId/nodes ─────────────────────────────────────────
+
+modelsRouter.post("/models/:modelId/nodes", async (req: Request, res: Response) => {
+  const { name, description, owner, level, parentId, kindId, properties } = req.body ?? {};
+  if (!name) { res.status(400).json({ error: "name is required" }); return; }
+  if (level == null) { res.status(400).json({ error: "level is required" }); return; }
+  try {
+    const node = await createNode({ name, description, owner, level, parentId, modelId: req.params.modelId as string, kindId, properties });
+    res.status(201).json(node);
+  } catch (err) {
+    handleServiceError(err, res);
+  }
+});
 
 // ─── GET /api/models ──────────────────────────────────────────────────────────
 

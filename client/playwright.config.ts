@@ -27,8 +27,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /* Live output in terminal + full HTML report with screenshots/video after */
+  reporter: [['list'], ['html', { open: 'always' }]],
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -36,8 +37,19 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.CI ? 'http://localhost:4173' : 'http://localhost:5173',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    /* Full trace on every local run so step-by-step replay is always available */
+    trace: process.env.CI ? 'on-first-retry' : 'on',
+
+    /* Screenshot after every test */
+    screenshot: 'on',
+
+    /* Video of every test */
+    video: 'on',
+
+    /* Slow down actions locally so interactions are visible in the browser window */
+    launchOptions: {
+      slowMo: process.env.CI ? 0 : 400,
+    },
 
     /* Only on CI systems run the tests headless */
     headless: !!process.env.CI,

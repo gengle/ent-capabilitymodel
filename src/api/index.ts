@@ -1,5 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
 import { modelsRouter } from "./routes/models";
+import { nodesRouter } from "./routes/nodes";
+import { modelTypesRouter } from "./routes/model-types";
+import { nodeKindsRouter } from "./routes/node-kinds";
 
 const app = express();
 const PORT = process.env.API_PORT ?? 3001;
@@ -7,6 +10,9 @@ const PORT = process.env.API_PORT ?? 3001;
 app.use(express.json());
 
 app.use("/api", modelsRouter);
+app.use("/api", nodesRouter);
+app.use("/api", modelTypesRouter);
+app.use("/api", nodeKindsRouter);
 
 // Global error handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {

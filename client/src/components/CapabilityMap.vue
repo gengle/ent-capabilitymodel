@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import type { ModelTree } from '../api'
+import { inject } from 'vue'
+import type { ModelTree, NodeKind } from '../api'
 import DomainCard from './DomainCard.vue'
 
-defineProps<{ tree: ModelTree }>()
+defineProps<{ tree: ModelTree; nodeKinds: NodeKind[] }>()
+
+const nodeActions = inject<{
+  addNode: (parentId: string | null, level: number) => void
+}>('nodeActions')!
 </script>
 
 <template>
@@ -15,5 +20,6 @@ defineProps<{ tree: ModelTree }>()
         :domain="domain"
       />
     </div>
+    <button class="add-btn add-domain-btn" @click="nodeActions.addNode(null, 1)">＋ Add Domain</button>
   </div>
 </template>
