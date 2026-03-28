@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(openspec new:*)",
+      "Bash(openspec status:*)",
+      "Bash(openspec instructions:*)",
+      "Bash(npm init:*)",
+      "Bash(ls C:/Users/grege/source/enterprise-capabilitymodel/generated/prisma/*.ts)",
+      "Bash(ls C:/Users/grege/source/enterprise-capabilitymodel/generated/prisma/index*)",
+      "Bash(npm test:*)",
+      "Bash(node:*)"
+    ]
+  }
+}
