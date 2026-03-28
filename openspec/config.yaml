@@ -9,6 +9,24 @@ schema: spec-driven
 #     We use conventional commits
 #     Domain: e-commerce platform
 
+rules:
+  proposal:
+    - Include rollback plan for breaking changes
+    - Identify affected teams and dependencies
+  specs:
+    - Use GIVEN/WHEN/THEN format for scenarios
+    - Include at least one error scenario per requirement
+  design:
+    - Document performance implications
+    - Consider backward compatibility
+  tasks:
+    - Break down tasks to < 2 hours each
+
+# Optional: Context files for AI to read
+contextFiles:
+  - README.md
+  - docs/architecture.md
+  
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
 # Example:

@@ -1,5 +1,4 @@
 import { prisma } from "../db/client";
-import type { NodeKind } from "../../generated/prisma";
 import {
   validateNodeKindSchema,
   validateProperties,
@@ -15,7 +14,7 @@ export type CreateNodeKindInput = {
 };
 
 /** 3.1 Create a NodeKind. Validates schema structure and enforces unique name. */
-export async function createNodeKind(input: CreateNodeKindInput): Promise<NodeKind> {
+export async function createNodeKind(input: CreateNodeKindInput) {
   const schemaErrors = validateNodeKindSchema(input.schema);
   if (schemaErrors.length > 0) {
     throw new Error(`Invalid schema: ${schemaErrors.map((e) => e.message).join("; ")}`);
@@ -32,12 +31,12 @@ export async function createNodeKind(input: CreateNodeKindInput): Promise<NodeKi
 }
 
 /** 3.2 List all NodeKinds. */
-export async function listNodeKinds(): Promise<NodeKind[]> {
+export async function listNodeKinds() {
   return prisma.nodeKind.findMany({ orderBy: { name: "asc" } });
 }
 
 /** 3.3 Get a NodeKind by ID. */
-export async function getNodeKind(id: string): Promise<NodeKind> {
+export async function getNodeKind(id: string) {
   const kind = await prisma.nodeKind.findUnique({ where: { id } });
   if (!kind) throw new Error(`NodeKind '${id}' not found`);
   return kind;
@@ -50,7 +49,7 @@ export async function getNodeKind(id: string): Promise<NodeKind> {
 export async function updateNodeKindSchema(
   id: string,
   newSchema: NodeKindSchema
-): Promise<NodeKind> {
+) {
   const schemaErrors = validateNodeKindSchema(newSchema);
   if (schemaErrors.length > 0) {
     throw new Error(`Invalid schema: ${schemaErrors.map((e) => e.message).join("; ")}`);

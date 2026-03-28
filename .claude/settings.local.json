@@ -8,7 +8,10 @@
       "Bash(ls C:/Users/grege/source/enterprise-capabilitymodel/generated/prisma/*.ts)",
       "Bash(ls C:/Users/grege/source/enterprise-capabilitymodel/generated/prisma/index*)",
       "Bash(npm test:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(openspec list:*)",
+      "Bash(npm install:*)",
+      "Bash(npx ts-node:*)"
     ]
   }
 }

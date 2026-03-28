@@ -1,5 +1,4 @@
 import { prisma } from "../db/client";
-import type { NodeRelationship } from "../../generated/prisma";
 
 export type CreateNodeRelationshipInput = {
   fromNodeId: string;
@@ -11,7 +10,7 @@ export type CreateNodeRelationshipInput = {
 /** 6.1 Create a NodeRelationship. Validates node existence, rejects self-referential. */
 export async function createNodeRelationship(
   input: CreateNodeRelationshipInput
-): Promise<NodeRelationship> {
+) {
   if (input.fromNodeId === input.toNodeId) {
     throw new Error("A node cannot have a relationship with itself");
   }
@@ -38,7 +37,7 @@ export async function createNodeRelationship(
 export async function listRelationships(
   nodeId: string,
   options: { direction?: "from" | "to" | "both"; relationType?: string } = {}
-): Promise<NodeRelationship[]> {
+) {
   const { direction = "from", relationType } = options;
 
   const typeFilter = relationType ? { relationType } : {};
@@ -65,7 +64,7 @@ export async function listRelationships(
 }
 
 /** 6.3 Get a NodeRelationship by ID. */
-export async function getNodeRelationship(id: string): Promise<NodeRelationship> {
+export async function getNodeRelationship(id: string) {
   const rel = await prisma.nodeRelationship.findUnique({
     where: { id },
     include: { fromNode: true, toNode: true },

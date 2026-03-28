@@ -1,5 +1,4 @@
 import { prisma } from "../db/client";
-import type { ModelType } from "../../generated/prisma";
 
 export type CreateModelTypeInput = {
   name: string;
@@ -7,7 +6,7 @@ export type CreateModelTypeInput = {
 };
 
 /** 2.1 Create a ModelType. Rejects if name already exists. */
-export async function createModelType(input: CreateModelTypeInput): Promise<ModelType> {
+export async function createModelType(input: CreateModelTypeInput) {
   const existing = await prisma.modelType.findUnique({ where: { name: input.name } });
   if (existing) {
     throw new Error(`ModelType with name '${input.name}' already exists`);
@@ -16,12 +15,12 @@ export async function createModelType(input: CreateModelTypeInput): Promise<Mode
 }
 
 /** 2.2 List all ModelTypes. */
-export async function listModelTypes(): Promise<ModelType[]> {
+export async function listModelTypes() {
   return prisma.modelType.findMany({ orderBy: { name: "asc" } });
 }
 
 /** 2.3 Get a ModelType by ID. */
-export async function getModelType(id: string): Promise<ModelType> {
+export async function getModelType(id: string) {
   const modelType = await prisma.modelType.findUnique({ where: { id } });
   if (!modelType) {
     throw new Error(`ModelType '${id}' not found`);

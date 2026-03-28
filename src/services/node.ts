@@ -1,5 +1,4 @@
 import { prisma } from "../db/client";
-import type { Node } from "../../generated/prisma";
 import { validateProperties, parseSchema } from "../validators/node-kind-schema";
 
 export type CreateNodeInput = {
@@ -75,7 +74,7 @@ async function validateNodeProperties(
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 /** 5.1 + 5.2 + 5.3 Create a Node with hierarchy, kind, and property validation. */
-export async function createNode(input: CreateNodeInput): Promise<Node> {
+export async function createNode(input: CreateNodeInput) {
   if (input.level < 1 || input.level > 4) {
     throw new Error("Node level must be between 1 and 4");
   }
@@ -103,7 +102,7 @@ export async function createNode(input: CreateNodeInput): Promise<Node> {
 }
 
 /** 5.4 Get a Node by ID. */
-export async function getNode(id: string): Promise<Node> {
+export async function getNode(id: string) {
   const node = await prisma.node.findUnique({
     where: { id },
     include: { kind: true, parent: true },
@@ -113,7 +112,7 @@ export async function getNode(id: string): Promise<Node> {
 }
 
 /** 5.5 List all Nodes in a Model (flat). */
-export async function listNodesByModel(modelId: string): Promise<Node[]> {
+export async function listNodesByModel(modelId: string) {
   return prisma.node.findMany({
     where: { modelId },
     orderBy: [{ level: "asc" }, { name: "asc" }],
@@ -125,7 +124,7 @@ export async function listNodesByModel(modelId: string): Promise<Node[]> {
  * 5.6 Get the subtree rooted at a Node (node + all descendants).
  * Uses a recursive CTE for efficient traversal.
  */
-export async function getSubtree(nodeId: string): Promise<Node[]> {
+export async function getSubtree(nodeId: string) {
   const rows = await prisma.$queryRaw<Node[]>`
     WITH RECURSIVE subtree AS (
       SELECT * FROM nodes WHERE id = ${nodeId}
@@ -143,7 +142,7 @@ export async function getSubtree(nodeId: string): Promise<Node[]> {
  * 5.7 Get the ancestor path from root to the immediate parent of a Node.
  * Returns ordered list: [root, ..., parent].
  */
-export async function getAncestors(nodeId: string): Promise<Node[]> {
+export async function getAncestors(nodeId: string) {
   const node = await prisma.node.findUnique({ where: { id: nodeId } });
   if (!node) throw new Error(`Node '${nodeId}' not found`);
   if (!node.parentId) return [];
@@ -161,7 +160,7 @@ export async function getAncestors(nodeId: string): Promise<Node[]> {
 }
 
 /** 5.8 Update a Node. Re-validates properties against kind schema if properties changed. */
-export async function updateNode(id: string, input: UpdateNodeInput): Promise<Node> {
+export async function updateNode(id: string, input: UpdateNodeInput) {
   const existing = await prisma.node.findUnique({ where: { id } });
   if (!existing) throw new Error(`Node '${id}' not found`);
 
